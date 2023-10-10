@@ -13,50 +13,50 @@ jobs:
       - run: docker build -t cygnetops/react-test -f Dockerfile.dev .
       - run: docker run -e CI=true cygnetops/react-test npm test
 
-  deploy:
-    name: Deploy to EC2 on master branch push 
-    runs-on: ubuntu-latest
-    steps:  
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Deploy to Server
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST_DNS }}
-          username: ${{ secrets.USERNAME }} 
-          key: ${{ secrets.ENCRYPTED_SSH_KEY }}  
-          script: |
-            sudo apt-get -y update
-            sudo apt-get install -y apache2
-            sudo systemctl start apache2
-            sudo systemctl enable apache2  
-            cd /home/${{ secrets.USERNAME }}
-            sudo mv * /var/www/html
-
-
-
   # deploy:
-  #   name: Deploy to EC2 on master branch push
+  #   name: Deploy to EC2 on master branch push 
   #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout the files
+  #   steps:  
+  #     - name: Checkout code
   #       uses: actions/checkout@v2
-    
-  #     - name: Deploy to Server 1
-  #       uses: easingthemes/ssh-deploy@main
-  #       env:
-  #         SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-  #         REMOTE_HOST: ${{ secrets.HOST_DNS }}
-  #         REMOTE_USER: ${{ secrets.USERNAME }}
-  #         TARGET: ${{ secrets.TARGET_DIR }}
-    
-  #     - name: Executing remote ssh commands using ssh key
+
+  #     - name: Deploy to Server
   #       uses: appleboy/ssh-action@master
   #       with:
-  #          host: ${{ secrets.HOST_DNS }}
-  #          username: ${{ secrets.USERNAME }}
-  #          key: ${{ secrets.EC2_SSH_KEY }}  
+  #         host: ${{ secrets.HOST_DNS }}
+  #         username: ${{ secrets.USERNAME }} 
+  #         key: ${{ secrets.ENCRYPTED_SSH_KEY }}  
+  #         script: |
+  #           sudo apt-get -y update
+  #           sudo apt-get install -y apache2
+  #           sudo systemctl start apache2
+  #           sudo systemctl enable apache2  
+  #           cd /home/${{ secrets.USERNAME }}
+  #           sudo mv * /var/www/html
+
+
+
+  deploy:
+    name: Deploy to EC2 on master branch push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the files
+        uses: actions/checkout@v2
+    
+      # - name: Deploy to Server 1
+      #   uses: easingthemes/ssh-deploy@main
+      #   env:
+      #     SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+      #     REMOTE_HOST: ${{ secrets.HOST_DNS }}
+      #     REMOTE_USER: ${{ secrets.USERNAME }}
+      #     TARGET: ${{ secrets.TARGET_DIR }}
+    
+      - name: Executing remote ssh commands using ssh key
+        uses: appleboy/ssh-action@master
+        with:
+           host: ${{ secrets.HOST_DNS }}
+           username: ${{ secrets.USERNAME }}
+           key: ${{ secrets.EC2_SSH_KEY }}  
   #          script: |
   #             sudo apt-get -y update
   #             sudo apt-get install -y apache2
